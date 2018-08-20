@@ -99,7 +99,7 @@ function addEvents(auth) {
   const calendar = google.calendar({version: 'v3', auth});  
   // const copy = [];
   const options = {  
-      url: 'https://itops.chattanooga.gov/rest/api/latest/search?maxResults=100&jql=issuetype%20%3D%20Change%20AND%20status%20%3D%20"Waiting%20for%20Approval"',
+      url: 'https://itops.chattanooga.gov/rest/api/latest/search?maxResults=100&jql=issuetype%20%3D%20Change%20AND%20status%20%3D%20%22Approved%22%20AND%20updated%20%3E%3D%20-60m',
       method: 'GET',
       auth: {
           username: 'rrios',
@@ -118,19 +118,11 @@ function addEvents(auth) {
     }
     async function loop() {
       for (let i = 0; i < items.length; i++) {
-        console.log(i);
-        console.log(items[i].fields.summary);
-      updated = items[i].fields.updated.split("T")[0]
-      var dateNow = new Date();
-      var dd = dateNow.getDate().toString();
-      var monthSingleDigit = dateNow.getMonth() + 1,
-            mm = monthSingleDigit < 10 ? '0' + monthSingleDigit : monthSingleDigit;
-        var yy = dateNow.getFullYear().toString();
-      var today = yy.concat("-").concat(mm).concat("-").concat(dd)
+        // console.log(i);
+        // console.log(items[i].fields.summary);
       status = items[i].fields.status.name;
-      updated = items[i].fields.updated.split("T")[0]
       schedule = items[i].fields.customfield_10310.split("T")[0]
-      if (status == "Waiting for Approval" && updated == today){
+      // if (status == "Approved"){
         schedule = items[i].fields.customfield_10310.split("T")[0]
         var event = {
           'summary': items[i].fields.summary,
@@ -171,9 +163,9 @@ function addEvents(auth) {
           }
           console.log('Event created: %s', event.htmlLink);
         });
-      }    
+      // }    
     // });
-    await delay(1000);
+    await delay(500);
     }
     }
     loop();
