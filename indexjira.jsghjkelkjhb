@@ -1,0 +1,21 @@
+const request = require('request');
+const options = {  
+    url: 'https://itops.chattanooga.gov/rest/api/latest/search?maxResults=100&jql=issuetype%20%3D%20Change%20AND%20status%20%3D%20"Waiting%20for%20Approval"',
+    method: 'GET',
+    auth: {
+        username: 'rrios',
+        password: 'Fall2018!'
+    }
+};
+
+request(options, function(err, res, body) {  
+    let json = JSON.parse(body);
+    const items = json.issues;
+const copy = [];
+items.forEach(function(item){
+  copy.push({Title:item.fields.summary, assignee:item.fields.assignee.displayName, schedule:item.fields.customfield_10310});
+});
+console.log(copy);
+});
+
+
